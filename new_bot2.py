@@ -6,10 +6,11 @@ from random import randint
 import vk_api
 import datetime
 import data
+import time
 
 
 class Bot:
-    clouds = {'облако сережи': 'https://yadi.sk/d/zkdaamG-Ol-sjg',
+    clouds = {
               'облако': 'https://cloud.mail.ru/public/NAzt/FJpjdhFpZ',
               'облако мыкольникова': 'https://yadi.sk/d/IN37NgpLzhI1SA',
               }
@@ -31,8 +32,8 @@ class Bot:
         if payload == 2:
             keyboard.add_button('Облако', payload=5, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
-            keyboard.add_button('Облако Сережи', payload=6, color=VkKeyboardColor.PRIMARY)
-            keyboard.add_line()
+            # keyboard.add_button('Облако Сережи', payload=6, color=VkKeyboardColor.PRIMARY)
+            # keyboard.add_line()
             keyboard.add_button('Облако Мыкольникова', payload=7, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
             keyboard.add_button('Главное меню', payload=1, color=VkKeyboardColor.PRIMARY)
@@ -147,6 +148,14 @@ class Bot:
             print('Числитель')
             return f'{numbrer_of_the_week} неделя, Числитель'
 
+    def try_main_method(self):
+        try:
+            self.main_method()
+        except:
+            sleep(20)
+            self.try_main_method()
+
+
 
 start = Bot()
-start.main_method()
+start.try_main_method()
