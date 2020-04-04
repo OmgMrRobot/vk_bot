@@ -152,11 +152,11 @@ class Bot:
             return f'{numbrer_of_the_week} неделя, Числитель'
 
     def try_main_method(self):
-        # try:
-        self.main_method()
-        # except:
-        #     time.sleep(20)
-        #     self.try_main_method()
+        try:
+            self.main_method()
+        except:
+            time.sleep(20)
+            self.try_main_method()
 
 
 
