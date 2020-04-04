@@ -7,6 +7,7 @@ import vk_api
 import datetime
 import data
 import time
+from weather import Weather
 
 
 class Bot:
@@ -41,7 +42,7 @@ class Bot:
         elif payload == 10:
             n = 11
             for response in self.contacts.keys():
-                keyboard.add_button(response, payload=n, color=VkKeyboardColor.PRIMARY)
+                keyboard.add_button(response.title(), payload=n, color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 n += 1
             keyboard.add_button('Cледующая страница', payload=n, color=VkKeyboardColor.PRIMARY)
@@ -49,7 +50,7 @@ class Bot:
         elif payload == 20:
             n = 21
             for response in self.contacts_2.keys():
-                keyboard.add_button(response, payload=n, color=VkKeyboardColor.PRIMARY)
+                keyboard.add_button(response.title(), payload=n, color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 n += 1
             keyboard.add_button('Главное меню', payload=1, color=VkKeyboardColor.PRIMARY)
@@ -61,7 +62,7 @@ class Bot:
 
         else:
             keyboard.add_button('Хочу облако', payload=2, color=VkKeyboardColor.PRIMARY)
-            keyboard.add_button('Расписание', payload=1, color=VkKeyboardColor.PRIMARY)
+            keyboard.add_button('Погода', payload=3, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
             keyboard.add_button('Какая сейчас неделя', payload=8, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
@@ -105,8 +106,10 @@ class Bot:
                     if response == 'start' or payload == 1:
                         self.send_message(peer_id=event.obj.peer_id,
                                           message='О чем ты хочешь узнать {0}?'.format(first_name), keyboard=keyboard)
-                    elif payload == None:
-                        pass
+                    elif payload == 3:
+                        weather = Weather()
+                        self.send_message(peer_id=event.obj.peer_id,
+                                          message=weather.get_currency_weather(), keyboard=keyboard)
                     elif payload == 2:
                         self.send_message(peer_id=event.obj.peer_id,
                                           message='Какое облако вы хотите, {0}'.format(first_name), keyboard=keyboard)
@@ -149,11 +152,11 @@ class Bot:
             return f'{numbrer_of_the_week} неделя, Числитель'
 
     def try_main_method(self):
-        try:
-            self.main_method()
-        except:
-            sleep(20)
-            self.try_main_method()
+        # try:
+        self.main_method()
+        # except:
+        #     time.sleep(20)
+        #     self.try_main_method()
 
 
 
