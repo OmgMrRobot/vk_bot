@@ -17,8 +17,9 @@ class Bot:
               }
 
     contacts = data.contacts
-
     contacts_2 = data.contacts_2
+    contacts_3 =  data.contacts_3
+    bot_name = ['bot', 'хлам', 'start', 'xlam', 'бот', 'старт', 'дуц']
 
     def __init__(self):
         self.token = data.token
@@ -26,6 +27,7 @@ class Bot:
         self.vk_session = vk_api.VkApi(token=self.token)
         self.session_api = self.vk_session.get_api()
         self.longpoll = VkBotLongPoll(self.vk_session, self.group_id)
+
 
     def create_keyboard(self, payload):
         keyboard = vk_api.keyboard.VkKeyboard(one_time=True)
@@ -53,22 +55,31 @@ class Bot:
                 keyboard.add_button(response.title(), payload=n, color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 n += 1
+            keyboard.add_button('Cледующая страница', payload=n, color=VkKeyboardColor.PRIMARY)
+
+        elif payload == 30:
+            n = 31
+            for response in self.contacts_3.keys():
+                keyboard.add_button(response.title(), payload=n, color=VkKeyboardColor.PRIMARY)
+                keyboard.add_line()
+                n += 1
             keyboard.add_button('Главное меню', payload=1, color=VkKeyboardColor.PRIMARY)
 
 
         elif payload == 4:
-            print('Закрываем клаву')
             return keyboard.get_empty_keyboard()
 
         else:
             keyboard.add_button('Хочу облако', payload=2, color=VkKeyboardColor.PRIMARY)
             keyboard.add_button('Погода', payload=3, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
+            keyboard.add_button('Расписание на сегодня', payload=70, color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
             keyboard.add_button('Какая сейчас неделя', payload=8, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
             keyboard.add_button('Контакты преподавателя', payload=10, color=VkKeyboardColor.PRIMARY)
-            keyboard.add_line()
-            keyboard.add_button('Закрыть быстрый ввод', payload=4, color=VkKeyboardColor.PRIMARY)
+            # keyboard.add_line()
+            # keyboard.add_button('Закрыть быстрый ввод', payload=4, color=VkKeyboardColor.PRIMARY)
 
         return keyboard.get_keyboard()
 
@@ -84,7 +95,6 @@ class Bot:
     def main_method(self):
         for event in self.longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
-                # print('Текст сообщения: ' + str(event.obj.text))
                 if event.obj.payload != None:
                     payload = int(event.obj.payload)
                 else:
@@ -98,12 +108,11 @@ class Bot:
                                                                                                  peer_id=event.obj.peer_id,
                                                                                                  fields='profiles')[
                                                                                                  'profiles']]))[0]
-                    print(
-                        f'Текст сообщения: {response} ,от {sender_name["first_name"]} id: {sender_name["id"]}  {datetime.datetime.now()}')
+
                     first_name = str(sender_name['first_name'])
 
                     keyboard = self.create_keyboard(payload)
-                    if response == 'start' or payload == 1:
+                    if response in self.bot_name or payload == 1:
                         self.send_message(peer_id=event.obj.peer_id,
                                           message='О чем ты хочешь узнать {0}?'.format(first_name), keyboard=keyboard)
                     elif payload == 3:
@@ -116,49 +125,47 @@ class Bot:
                     elif 5 <= payload <= 7:
                         self.send_message(peer_id=event.obj.peer_id, message=self.clouds[response], keyboard=keyboard)
                     elif payload == 8:
-                        self.send_message(peer_id=event.obj.peer_id, message=self.which_week_is_now(),
+                        self.send_message(peer_id=event.obj.peer_id, message=self.which_week_is_now()[0],
                                           keyboard=keyboard)
                     elif payload == 10:
                         self.send_message(peer_id=event.obj.peer_id,
                                           message='Чьи контакты вы хотите, {0}'.format(first_name), keyboard=keyboard)
                     elif 11 <= payload < 20:
                         self.send_message(peer_id=event.obj.peer_id, message=self.contacts[response], keyboard=keyboard)
-                    elif 21 <= payload <= 28:
+                    elif 21 <= payload < 30:
                         self.send_message(peer_id=event.obj.peer_id, message=self.contacts_2[response],
                                           keyboard=keyboard)
-                    elif payload == 20:
+                    elif 31 <= payload <= 32:
+                        self.send_message(peer_id=event.obj.peer_id, message=self.contacts_3[response],
+                                          keyboard=keyboard)
+                    elif payload == 20 or payload == 30:
                         self.send_message(peer_id=event.obj.peer_id,
                                           message='Cледующая страница, {0}'.format(first_name), keyboard=keyboard)
+                    elif payload == 70:
+                        self.send_message(peer_id=event.obj.peer_id, message=self.which_week_is_now()[1],
+                                          keyboard=keyboard)
 
     def which_week_is_now(self):
-        # Date = datetime.date(2020, 2, 8)
-        # day_of_the_week = datetime.datetime.isocalendar(Date)[2]
-        # numbrer_of_the_week = datetime.datetime.isocalendar(Date)[1]
-        # print(Date)
-        # print(day_of_the_week)
-        # print(numbrer_of_the_week)
         Date = datetime.datetime.now()
-        day_of_the_week = datetime.datetime.isocalendar(Date)[2]
         numbrer_of_the_week = datetime.datetime.isocalendar(Date)[1]
-        numbrer_of_the_week -= 6
-        print(Date)
-        print(day_of_the_week)
-        print(numbrer_of_the_week)
-        if numbrer_of_the_week % 2 == 0:
-            print('Знаменатель')
-            return f'{numbrer_of_the_week} неделя, Знаменатель'
+        if numbrer_of_the_week > 34:
+            numbrer_of_the_week -= 35
         else:
-            print('Числитель')
-            return f'{numbrer_of_the_week} неделя, Числитель'
+            numbrer_of_the_week -= 6
+        if numbrer_of_the_week % 2 == 0:
+            return [f'{numbrer_of_the_week} неделя, Знаменатель', data.time_table[2][datetime.datetime.isoweekday(Date)]]
+        else:
+            return [f'{numbrer_of_the_week} неделя, Числитель', data.time_table[1][datetime.datetime.isoweekday(Date)]]
 
     def try_main_method(self):
         try:
             self.main_method()
         except:
-            time.sleep(20)
+            time.sleep(600)
             self.try_main_method()
 
 
 
 start = Bot()
 start.try_main_method()
+
