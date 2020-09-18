@@ -1,14 +1,18 @@
-from pyowm import OWM
+
+import requests
+import json
+import data
 
 class Weather():
-    key = 'effd2d0dea281ac4073dc1bd354964d1'
-    owm = OWM(f'{key}')  # You MUST provide a valid API key
+    key = data.keyowm
+    w = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid={key}')
+
+    def kelvin_to_celsius(self, temp):
+        return str(int(temp) - 273)
 
     def get_currency_weather(self):
-        mgr = self.owm.weather_manager()
-        observation = mgr.weather_at_place('Moscow, RU')
-        w = observation.weather
-        return f'Погода сейчас: {w.status}\nТемпература: {w.temperature("celsius")["temp"]}\nОщущается как {w.temperature("celsius")["feels_like"]}\nВлажность: {w.humidity}'  # достаем знаначение
+        w = json.loads(self.w.text)
+        return f'Погода сейчас: {w["weather"][0]["main"]}\nТемпература: {self.kelvin_to_celsius(w["main"]["temp"])}\nОщущается как {self.kelvin_to_celsius(w["main"]["feels_like"])} \nВлажность: {w["main"]["humidity"]}'
 
 if __name__ == '__main__':
     w = Weather()
