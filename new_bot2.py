@@ -8,6 +8,7 @@ import datetime
 import data
 import time
 from weather import Weather
+import tuturu
 
 
 class Bot:
@@ -65,6 +66,17 @@ class Bot:
                 n += 1
             keyboard.add_button('Главное меню', payload=1, color=VkKeyboardColor.PRIMARY)
 
+        elif payload == 71:
+            keyboard.add_button('Авиа -> Ильинская', payload=72, color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
+            keyboard.add_button('Авиа -> Хрипань', payload=73, color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
+            keyboard.add_button('Ильинская -> Авиа', payload=74, color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
+            keyboard.add_button('Хрипань -> Авиа', payload=75, color=VkKeyboardColor.PRIMARY)
+
+
+
 
         elif payload == 4:
             return keyboard.get_empty_keyboard()
@@ -78,6 +90,8 @@ class Bot:
             keyboard.add_button('Какая сейчас неделя', payload=8, color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
             keyboard.add_button('Контакты преподавателя', payload=10, color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
+            keyboard.add_button('Электрички', payload=71, color=VkKeyboardColor.PRIMARY)
             # keyboard.add_line()
             # keyboard.add_button('Закрыть быстрый ввод', payload=4, color=VkKeyboardColor.PRIMARY)
 
@@ -144,6 +158,23 @@ class Bot:
                     elif payload == 70:
                         self.send_message(peer_id=event.obj.peer_id, message=self.which_week_is_now()[1],
                                           keyboard=keyboard)
+                    elif payload == 71:
+                        self.send_message(peer_id=event.obj.peer_id, message='Выбери страница, {0}'.format(first_name),
+                                          keyboard=keyboard)
+                    elif payload == 72:
+                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(72)[:2])}",
+                                          keyboard=keyboard)
+                    elif payload == 73:
+                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(73)[:2])}",
+                                          keyboard=keyboard)
+                    elif payload == 74:
+                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(74)[:2])}",
+                                          keyboard=keyboard)
+                    elif payload == 75:
+                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(75)[:2])}",
+                                          keyboard=keyboard)
+
+
 
     def which_week_is_now(self):
         Date = datetime.datetime.now()
@@ -161,7 +192,7 @@ class Bot:
         try:
             self.main_method()
         except:
-            time.sleep(600)
+            time.sleep(10)
             self.try_main_method()
 
 
