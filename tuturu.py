@@ -19,12 +19,15 @@ def train(num):
     else:
         req = f'https://www.tutu.ru/rasp.php?st1={stations["хрипань"]}&st2={stations["авиа"]}'
 
-    now_ = datetime.now()
+    time_ = datetime.now()
+    now_ = time(time_.hour + 3, time_.minute,time_.second)
+    print(now_)
     r = requests.get(req)
     bs = BeautifulSoup(r.text, "html.parser")
     bs = bs.findAll('a', class_="g-link desktop__depTimeLink__1NA_N")
     bs = [re.findall("\d\d:\d\d", str(i))[0] for i in bs]
 
-    return [i for i in bs if now_.time() < time(int(i[:2]),int(i[3:]))]
+    return [i for i in bs if now_ < time(int(i[:2]), int(i[3:]))]
 
 
+print(train(72))

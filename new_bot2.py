@@ -13,13 +13,13 @@ import tuturu
 
 class Bot:
     clouds = {
-              'облако': 'https://cloud.mail.ru/public/NAzt/FJpjdhFpZ',
-              'облако мыкольникова': 'https://yadi.sk/d/IN37NgpLzhI1SA',
-              }
+        'облако': 'https://cloud.mail.ru/public/NAzt/FJpjdhFpZ',
+        'облако мыкольникова': 'https://yadi.sk/d/IN37NgpLzhI1SA',
+    }
 
     contacts = data.contacts
     contacts_2 = data.contacts_2
-    contacts_3 =  data.contacts_3
+    contacts_3 = data.contacts_3
     bot_name = ['bot', 'хлам', 'start', 'xlam', 'бот', 'старт', 'дуц']
 
     def __init__(self):
@@ -28,7 +28,6 @@ class Bot:
         self.vk_session = vk_api.VkApi(token=self.token)
         self.session_api = self.vk_session.get_api()
         self.longpoll = VkBotLongPoll(self.vk_session, self.group_id)
-
 
     def create_keyboard(self, payload):
         keyboard = vk_api.keyboard.VkKeyboard(one_time=True)
@@ -162,19 +161,21 @@ class Bot:
                         self.send_message(peer_id=event.obj.peer_id, message='Выбери страница, {0}'.format(first_name),
                                           keyboard=keyboard)
                     elif payload == 72:
-                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(72)[:2])}",
+                        self.send_message(peer_id=event.obj.peer_id,
+                                          message=f"Следующие электрички {' '.join(tuturu.train(72)[:2])}",
                                           keyboard=keyboard)
                     elif payload == 73:
-                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(73)[:2])}",
+                        self.send_message(peer_id=event.obj.peer_id,
+                                          message=f"Следующие электрички {' '.join(tuturu.train(73)[:2])}",
                                           keyboard=keyboard)
                     elif payload == 74:
-                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(74)[:2])}",
+                        self.send_message(peer_id=event.obj.peer_id,
+                                          message=f"Следующие электрички {' '.join(tuturu.train(74)[:2])}",
                                           keyboard=keyboard)
                     elif payload == 75:
-                        self.send_message(peer_id=event.obj.peer_id, message=f"Следующие электрички {' '.join(tuturu.train(75)[:2])}",
+                        self.send_message(peer_id=event.obj.peer_id,
+                                          message=f"Следующие электрички {' '.join(tuturu.train(75)[:2])}",
                                           keyboard=keyboard)
-
-
 
     def which_week_is_now(self):
         Date = datetime.datetime.now()
@@ -184,19 +185,19 @@ class Bot:
         else:
             numbrer_of_the_week -= 6
         if numbrer_of_the_week % 2 == 0:
-            return [f'{numbrer_of_the_week} неделя, Знаменатель', data.time_table[2][datetime.datetime.isoweekday(Date)]]
+            return [f'{numbrer_of_the_week} неделя, Знаменатель',
+                    data.time_table[2][datetime.datetime.isoweekday(Date)]]
         else:
             return [f'{numbrer_of_the_week} неделя, Числитель', data.time_table[1][datetime.datetime.isoweekday(Date)]]
 
-    def try_main_method(self):
-        try:
-            self.main_method()
-        except:
-            time.sleep(10)
-            self.try_main_method()
 
+while True:
+    start = Bot()
 
-
-start = Bot()
-start.try_main_method()
-
+    try:
+        start.main_method()
+    except KeyboardInterrupt:
+        break
+    except:
+        del start
+        time.sleep(10)
